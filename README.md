@@ -81,7 +81,7 @@ This stage is the heart of the "shift-left" approach. Before a single line of ap
 > 📷
 > 
 > ![SonarQube Quality Gate](Docs/Sonarqube2.png)
-> ![SonarQube Quality Gate](Docs/Sonarqube3.png)
+> ![SonarQube Quality Gate](Docs/sonarqube3.png)
 > 
 
 ---
@@ -120,7 +120,7 @@ The app was accessible at `54.149.242.216:30009/browse`, serving the full Netfli
 
 > 📷
 > ![K8s-pods](Docs/Kubernetes.png)
-> ![App Live]Docs/Netflix.png)
+> ![App Live](Docs/Netflix.png)
 > ![App Live](Docs/Netflix2.png)
 > 
 
@@ -137,7 +137,7 @@ After deployment, I wired up a monitoring stack to observe the infrastructure:
 > 📷 
 > 
 > ![Grafana Dashboard](Docs/Grafana.png)
-> ![Prometheus-Targets](Docs/Prometheus-targets.png)
+> ![Prometheus-Targets](Docs/prometheus-targets.png)
 > 
 
 ---
