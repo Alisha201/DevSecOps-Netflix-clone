@@ -1,1 +1,105 @@
+pipeline {
+    agent any
+    tools {
+        jdk 'jdk17'
+        nodejs 'node16'
+    }
+    environment {
+        SCANNER_HOME = tool 'sonar-scanner'
+    }
+    stages {
+        stage('clean workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Checkout from Git') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Aj7Ay/Netflix-clone.git'
+            }
+        }
+        stage("Sonarqube Analysis") {
+            steps {
+                withSonarQubeEnv('sonar-server') {
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Netflix \
+                    -Dsonar.projectKey=Netflix '''
+                }
+            }
+        }
+        stage("quality gate") {
+            steps {
+                script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
+                }
+            } 
+        }
+        stage('Install Dependencies') {
+            steps {
+                sh "npm install"
+            }
+        }
+    
+        stage('OWASP FS SCAN') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+        stage('TRIVY FS SCAN') {
+            steps {
+                sh "trivy fs . > trivyfs.txt"
+            }
+        }
 
+        stage("Docker Build & Push"){
+            steps{
+                script{
+                   withDockerRegistry(credentialsId: 'docker', url: 'https://index.docker.io/v1/'){   
+                       sh "docker build --build-arg TMDB_V3_API_KEY=9bab0cb8697e9e09ebe7ab8c4a773f96 -t netflix ."
+                       sh "docker tag netflix dock279/netflix:latest"
+                       sh "docker push dock279/netflix:latest"
+                    }
+                }
+            }
+        }
+
+        stage("TRIVY Image Scan"){
+            steps{
+                sh "trivy image dock279/netflix:latest > trivyimage.txt" 
+            }
+        }
+
+        stage('Deploy to container'){
+            steps{
+                sh "docker rm -f netflix || true"
+                sh 'docker run -d --name netflix -p 8081:80 dock279/netflix:latest'
+            }
+        }
+
+        stage('Deploy to Kubernetes'){
+            steps{
+                script{
+                    dir('Kubernetes') {
+                        withCredentials([file(credentialsId: 'k8s', variable: 'KUBECONFIG')]) {
+                            sh 'kubectl --kubeconfig=$KUBECONFIG apply -f deployment.yml'
+                            sh 'kubectl --kubeconfig=$KUBECONFIG apply -f service.yml'
+                        }
+                    }
+                }           
+            } 
+        }
+    } 
+
+    post {
+        always {
+            emailext attachLog: true,
+                subject: "'${currentBuild.result}': Project ${env.JOB_NAME}",
+                body: """<p>Project: ${env.JOB_NAME}</p>
+                         <p>Build Number: ${env.BUILD_NUMBER}</p>
+                         <p>URL: ${env.BUILD_URL}</p>
+                         <p>Status: ${currentBuild.result}</p>""",
+                to: 'abualisha941@gmail.com', 
+                attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
+        }
+    }
+}
