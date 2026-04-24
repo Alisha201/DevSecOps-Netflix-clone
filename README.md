@@ -31,9 +31,9 @@ GitHub (Source) → Jenkins (Orchestrator)
 ```
 
 > 📷 
-> ```md
-> ![Architecture Diagram](https://raw.githubusercontent.com/Alisha201/DevSecOps-Netflix-clone/main/Docs/arch.png)
-> ```
+> 
+> ![Architecture Diagram](Docs/arch.png)
+> 
 
 The infrastructure runs on AWS EC2. The Jenkins controller, SonarQube instance, and Kubernetes master (`K8s-Master`) were provisioned on separate nodes to avoid resource contention — a lesson I learned the hard way when SonarQube's embedded database started competing with Jenkins' build workers for heap space.
 
@@ -64,9 +64,9 @@ Setting up Jenkins was the most time-consuming part of the project — not becau
 The key plugins I configured: Blue Ocean (for the stage view), SonarQube Scanner, OWASP Dependency-Check, Docker Pipeline, and the Kubernetes CLI plugin. Managing plugin version compatibility was the first real debugging exercise of the project.
 
 > 📷 
-> ```md
+> 
 > ![Jenkins Setup](Docs/jenkins.png)
-> ```
+> 
 
 ---
 
