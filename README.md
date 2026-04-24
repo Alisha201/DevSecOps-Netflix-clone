@@ -30,7 +30,6 @@ GitHub (Source) → Jenkins (Orchestrator)
                                Monitoring: Prometheus + Node Exporter → Grafana
 ```
 
-> 📷 
 > 
 > ![Architecture Diagram](Docs/arch.png)
 > 
@@ -62,8 +61,7 @@ The infrastructure runs on AWS EC2. The Jenkins controller, SonarQube instance, 
 Setting up Jenkins was the most time-consuming part of the project — not because it's hard, but because getting the plugins right requires patience. I configured SMTP-based email notifications so that every build result (pass or fail) fires off an alert. This matters because in a real team, a broken build that nobody notices is worse than a build that was never triggered.
 
 The key plugins I configured: Blue Ocean (for the stage view), SonarQube Scanner, OWASP Dependency-Check, Docker Pipeline, and the Kubernetes CLI plugin. Managing plugin version compatibility was the first real debugging exercise of the project.
-
-> 📷 
+ 
 > 
 > ![Jenkins Setup](Docs/jenkins.png)
 > 
@@ -78,7 +76,6 @@ This stage is the heart of the "shift-left" approach. Before a single line of ap
 
 **OWASP Dependency-Check:** This stage scans the project's `package.json` dependencies and checks each library's CVE history. The Dependency-Check trend graph in Jenkins shows consistently ~8 High-severity findings across builds — these are known vulnerabilities in the project's third-party dependencies, which I documented rather than suppressed.
 
-> 📷
 > 
 > ![SonarQube Quality Gate](Docs/Sonarqube2.png)
 > ![SonarQube Quality Gate](Docs/sonarqube3.png)
@@ -92,7 +89,6 @@ Once the code cleared the security gates, I built the Docker image and pushed it
 
 I kept the image lean by ensuring the build stage only copies what's needed for production — avoiding the common mistake of shipping `devDependencies` and build toolchains into the final image. The image has been pulled 26 times from Docker Hub, confirming it's being successfully retrieved by the Kubernetes deployment manifest.
 
-> 📷 
 > 
 > ![Docker Hub](Docs/Dockerhub.png)
 >
@@ -104,8 +100,7 @@ I kept the image lean by ensuring the build stage only copies what's needed for 
 After the Docker image was pushed, Trivy scanned it for OS-level CVEs — vulnerabilities in the base image's system packages that have nothing to do with the application code itself. Running this scan *after* the build (rather than just a filesystem scan) catches a different class of vulnerability: anything introduced by the `FROM` base image in the Dockerfile.
 
 I configured Trivy in the pipeline to report findings without hard-failing the build on this stage (a deliberate trade-off documented in the next section), so the pipeline would continue to deployment while the report was archived as a build artifact.
-
-> 📷 
+ 
 > 
 > ![Final Pipeline Scan](Docs/Jenkins-pipeline.png)
 > 
@@ -118,7 +113,6 @@ The final stage applied a Kubernetes manifest to a single-node cluster (`K8s-Mas
 
 The app was accessible at `54.149.242.216:30009/browse`, serving the full Netflix Clone UI including the TMDB-powered movie catalog (Popular Movies, Top Rated, Now Playing). At the time of the screenshots, I observed two pods in `Pending` state due to resource constraints on the single-node cluster — this is captured honestly as a known limitation of a single-node K8s setup.
 
-> 📷
 > ![K8s-pods](Docs/Kubernetes.png)
 > ![App Live](Docs/Netflix.png)
 > ![App Live](Docs/Netflix2.png)
@@ -134,7 +128,6 @@ After deployment, I wired up a monitoring stack to observe the infrastructure:
 - **Grafana** (`54.245.12.254:3000`) hosts two dashboards: "Node Exporter Full" (tagged `linux`) and "Jenkins: Performance and Health Overview".
 - The Node Exporter Full dashboard during an active pipeline run showed CPU at 2.9%, RAM utilization at 91.6%, and SWAP at 73.6% — clear indicators that the instance was under pressure during heavy build stages.
 
-> 📷 
 > 
 > ![Grafana Dashboard](Docs/Grafana.png)
 > ![Monitoring](Docs/Monitoring.png)
@@ -143,7 +136,7 @@ After deployment, I wired up a monitoring stack to observe the infrastructure:
 
 ---
 
-## ⚖️ Engineering Trade-offs & Lessons Learned
+##  Engineering Trade-offs & Lessons Learned
 
 This section is the most honest part of the documentation — the decisions I'd revisit and the things I'd automate next.
 
