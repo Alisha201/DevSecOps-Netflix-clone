@@ -136,7 +136,7 @@ After deployment, I wired up a monitoring stack to observe the infrastructure:
 
 ---
 
-##  Engineering Trade-offs & Lessons Learned
+## 🔗 Engineering Trade-offs & Lessons Learned
 
 This section is the most honest part of the documentation — the decisions I'd revisit and the things I'd automate next.
 
