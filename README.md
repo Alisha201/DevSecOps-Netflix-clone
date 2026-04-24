@@ -137,6 +137,7 @@ After deployment, I wired up a monitoring stack to observe the infrastructure:
 > 📷 
 > 
 > ![Grafana Dashboard](Docs/Grafana.png)
+> [Monitoring](Docs/Monitoring.png)
 > ![Prometheus-Targets](Docs/prometheus-targets.png)
 > 
 
