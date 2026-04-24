@@ -32,7 +32,7 @@ GitHub (Source) → Jenkins (Orchestrator)
 
 > 📷 
 > ```md
-> ![Architecture Diagram](Docs/arch.png)
+> ![Architecture Diagram](https://github.com/Alisha201/DevSecOps-Netflix-clone/blob/main/Docs/arch.png?raw=true)
 > ```
 
 The infrastructure runs on AWS EC2. The Jenkins controller, SonarQube instance, and Kubernetes master (`K8s-Master`) were provisioned on separate nodes to avoid resource contention — a lesson I learned the hard way when SonarQube's embedded database started competing with Jenkins' build workers for heap space.
