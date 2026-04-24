@@ -79,9 +79,9 @@ This stage is the heart of the "shift-left" approach. Before a single line of ap
 **OWASP Dependency-Check:** This stage scans the project's `package.json` dependencies and checks each library's CVE history. The Dependency-Check trend graph in Jenkins shows consistently ~8 High-severity findings across builds — these are known vulnerabilities in the project's third-party dependencies, which I documented rather than suppressed.
 
 > 📷
-> ```md
-> ![SonarQube Quality Gate](Docs/sonarqube2.png)
-> ```
+> 
+> ![SonarQube Quality Gate](Docs/Sonarqube2.png)
+> 
 
 ---
 
@@ -91,10 +91,10 @@ Once the code cleared the security gates, I built the Docker image and pushed it
 
 I kept the image lean by ensuring the build stage only copies what's needed for production — avoiding the common mistake of shipping `devDependencies` and build toolchains into the final image. The image has been pulled 26 times from Docker Hub, confirming it's being successfully retrieved by the Kubernetes deployment manifest.
 
-> 📷 **[ ADD DOCKER HUB SCREENSHOT HERE ]**
-> ```md
-> ![Docker Hub](images/docker-hub.png)
-> ```
+> 📷 
+> 
+> ![Docker Hub](Docs/Dockerhub.png)
+>
 
 ---
 
@@ -104,10 +104,10 @@ After the Docker image was pushed, Trivy scanned it for OS-level CVEs — vulner
 
 I configured Trivy in the pipeline to report findings without hard-failing the build on this stage (a deliberate trade-off documented in the next section), so the pipeline would continue to deployment while the report was archived as a build artifact.
 
-> 📷 **[ ADD TRIVY SCAN OUTPUT SCREENSHOT HERE ]**
-> ```md
-> ![Trivy Scan](images/trivy-scan.png)
-> ```
+> 📷 
+> 
+> ![Final Pipeline Scan](Docs/Jenkins-pipeline.png)
+> 
 
 ---
 
