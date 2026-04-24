@@ -63,7 +63,7 @@ Setting up Jenkins was the most time-consuming part of the project — not becau
 
 The key plugins I configured: Blue Ocean (for the stage view), SonarQube Scanner, OWASP Dependency-Check, Docker Pipeline, and the Kubernetes CLI plugin. Managing plugin version compatibility was the first real debugging exercise of the project.
 
-> 📷 **[ ADD JENKINS SETUP / EMAIL CONFIG SCREENSHOT HERE ]**
+> 📷 
 > ```md
 > ![Jenkins Setup](Docs/jenkins.png)
 > ```
@@ -78,9 +78,9 @@ This stage is the heart of the "shift-left" approach. Before a single line of ap
 
 **OWASP Dependency-Check:** This stage scans the project's `package.json` dependencies and checks each library's CVE history. The Dependency-Check trend graph in Jenkins shows consistently ~8 High-severity findings across builds — these are known vulnerabilities in the project's third-party dependencies, which I documented rather than suppressed.
 
-> 📷 **[ ADD SONARQUBE QUALITY GATE SCREENSHOT HERE ]**
+> 📷
 > ```md
-> ![SonarQube Quality Gate](images/sonarqube-gate.png)
+> ![SonarQube Quality Gate](Docs/sonarqube2.png)
 > ```
 
 ---
